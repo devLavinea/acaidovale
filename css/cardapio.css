@@ -1,0 +1,394 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style:none;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+@media(min-width:901px){
+
+header{
+position:static;
+width: 100vw;
+display: flex;
+flex-direction:row;
+justify-content: center;
+z-index:10;
+height: 10vh;
+background-color:#ffd427;
+
+}
+
+
+.menu{
+width: 96%;
+height:auto;
+display: flex;
+align-items: center;
+flex-direction: row;
+justify-content: space-between;
+position:static;
+
+
+}
+
+.logo img
+{
+width: 135px;
+height: 55px;
+cursor: pointer;
+
+
+}
+
+
+
+.div-list{
+
+width: 45vw;
+
+}
+
+.div-list button{
+width:130px;
+height:40px;
+margin-left: 15px;
+border-radius:10px;
+background-color:#00b300;
+color:white;
+animation: click 2s ease-in-out infinite;
+cursor:pointer;
+font-weight:bold;
+font-size: 1.2em;
+}
+
+  @keyframes click{
+   0%,100%{
+  
+  scale: 87%;
+  
+    }
+    50%{
+        
+        scale:100%;
+    
+    }
+    
+    }
+
+.div-list ul{
+display: flex;
+align-items: center;
+flex-direction: row;
+justify-content: space-around;
+}
+
+
+
+
+
+
+.item-menu{
+font-size:1.4em;
+text-decoration:none;
+color: #6b1b6f; 
+margin-left: 30px;
+font-weight:bold;
+cursor: pointer;
+
+}
+
+ .item-menu:hover{
+color:#fff;
+}
+
+
+.divlogo
+{
+display: flex;
+align-items: center;
+width: 30vw;
+justify-content: start;
+padding-left: 30px;
+
+
+}
+#item-mobile{
+  display:none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+body{
+    display:flex;
+  flex-direction:column;
+  background-color:#6b1b6f;
+  width:100vw;
+  height:190vh;
+  align-items: center;
+  }
+  
+   
+  .fundo{
+   position:relative;
+   height:auto;
+   width:70vw;
+   z-index:2;
+    box-shadow: 1px 1px 10px 5px #2c003b;
+    
+  
+    }
+  
+    .div-cardapio{
+    position:absolute;
+    z-index:6;
+    height:auto;
+    width:100vw;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    top:15vh;
+   
+  
+    
+    }
+  
+    .logo-cardapio
+  {
+    width: 350px;
+    height: 195px;
+    
+    
+  }
+
+  .copos
+  {
+    
+    margin-left:2vw;
+    color: white;
+    align-items: center;
+    justify-content: space-around;
+    width:100vw;
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    margin-bottom:60px;
+    margin-top:25px;
+    font-size: 1em;
+   
+    
+  }
+
+  .copos-text{
+    margin-left: 170px;
+  }
+
+  
+  
+  .img-copos-1
+  {
+    width:80px;
+    height: 80px;
+    position: absolute;
+    
+  
+  
+  }
+  
+  .img-copos-2
+  {
+    width:90px;
+    height: 90px;
+    position: absolute;
+  
+  }
+  
+  .img-copos-3
+  {
+    width:100px;
+    height: 100px;
+    position: absolute;
+  
+  }
+  
+  .img-copos
+  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(107, 27, 111);
+    width: 40vw;
+    height: 45px;
+    border-radius: 25px;
+    transition:0.4s;
+    overflow: hidden;
+    
+    
+  }
+  
+  .img-copos:hover
+  {
+    width: 45vw;
+    height: 8vh;
+    border-radius:30px;
+  }
+  
+  .img-copos-preco
+  {
+    width:180px;
+    height: 50px;
+    background-color: #ffde59;
+    border-radius: 50px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(107, 27, 111);
+    font-size: 1.3em;
+    
+    
+    
+  }
+  
+  
+  .acompanhamentos
+  {
+   
+    width: 45vw;
+    height:65vh;
+    border-radius:2px;
+    text-align: start;
+    display: flex;
+    justify-content:space-between;
+    flex-direction:row;
+    border: 1px solid white;
+    padding: 5px 5px 5px 5px;
+    background-color:transparent;
+    color:white;
+    padding:30px 15px 15px 15px;
+    align-items:start;
+    font-size: 1.4em;
+    overflow-y: hidden;
+    
+  }
+  
+  
+  .acompanhamentos-1
+  {
+  
+    width: 50%;
+    height:auto;
+    text-align: start;
+    display: flex;
+    justify-content:space-around;
+    flex-direction:column;
+  }
+    .acompanhamentos-2
+  {
+  
+    width: 50%;
+    height:auto;
+    text-align: start;
+    display: flex;
+    justify-content:space-around;
+    flex-direction:column;
+  }
+  
+  
+  .adicional-text{
+  
+  width: 20vw;
+  font-weight:700;
+margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  }
+  
+  .list{
+  
+  margin-top:15px;
+  margin-bottom:10px;
+  text-align:start;
+  
+  }
+  
+  .list-item{
+  list-style-type:disc;
+  list-style-position:inside;
+  line-height:1.7em;
+  }
+  
+  
+  
+  
+  
+  
+  .button-pedido
+  {
+   
+    color:white;
+    font-size: 2.2em;
+    background-color: green;
+    border-radius:10px;
+    width: 30vw;
+    height: 10vh;
+    animation: pedido 2s ease-in-out infinite;
+    z-index:4;
+    cursor:pointer;
+    margin-top:50px;
+    font-weight: bold;
+    
+  }
+  
+  .acompanhamentos h3{
+  margin-top:25px;
+ 
+  
+  }
+  
+  .divisoria{
+  width:1.1px;
+  height:85vh;
+  background-color:white;
+  margin-right:30px;
+  }
+  
+  
+  @keyframes pedido{
+    0%,100%{
+        
+        scale: 100%;
+        
+    }
+    50%{
+      
+      scale:90%;
+    
+    }
+  }
+  
+   #contatos-localizacao-footer{
+    display:none;
+  
+    }
+    
+  
+  
+  }

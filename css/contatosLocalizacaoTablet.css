@@ -1,0 +1,215 @@
+
+
+@media (max-width:900px) and (min-width:601px){
+
+  body{
+    background-color:#2c003b;
+    width: 100vw;
+    height: 100vh;
+  }
+
+
+
+  #item-mobile{
+    display: block;
+  }
+  #item-desktop{
+    display: none;
+  }
+  #item-menu{
+    display: none;
+  }
+  
+
+    
+header{
+  position:static;
+  width: 100vw;
+  display: flex;
+  flex-direction:row;
+  justify-content: center;
+  align-items: center;
+  z-index:10;
+  height: 8vh;
+  background-color:#ffd427;
+  
+  
+  }
+  
+  
+  .menu{
+  width: 96%;
+  height:auto;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  position:static;
+  
+  
+  
+  }
+  
+  .logo img
+  {
+  width: 135px;
+  height: 70px;
+  cursor: pointer;
+  margin: 5px;
+  
+  
+  }
+  
+  
+  
+  .div-list{
+  
+  width: 80vw;
+  
+  }
+  
+  .div-list button{
+    
+  width:160px;
+  height:45px;
+  margin-left: 15px;
+  border-radius:10px;
+  background-color:#00b300;
+  color:white;
+  animation: click 2s ease-in-out infinite;
+  cursor:pointer;
+  font-weight:bold;
+  font-size: 1.3em;
+  }
+  
+    @keyframes click{
+     0%,100%{
+    
+    scale: 87%;
+    
+      }
+      50%{
+          
+          scale:100%;
+      
+      }
+      
+      }
+  
+  .div-list ul{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+  }
+  
+  
+  
+
+  
+  
+  .item-menu{
+  font-size:1.8em;
+  text-decoration:none;
+  color: #6b1b6f; 
+  margin-left: 30px;
+  font-weight:bold;
+  cursor: pointer;
+  
+  }
+  
+   .item-menu:hover{
+  color:#fff;
+  }
+  
+  
+  .divlogo
+  {
+  display: flex;
+  align-items: center;
+  width: 30vw;
+  justify-content: start;
+  padding-left: 30px;
+  
+  
+  }
+
+  
+    footer{
+      height:90vh;
+      align-items: center;
+      text-align: center;
+      width: 100vw;
+    display:flex;
+    justify-content:space-around;
+    flex-direction: column;
+    background-color:#2c003b;
+    color:white;
+    }
+   
+  
+    .location-contacts h2{
+     font-size: 2.5em;
+     opacity:0.9;
+     letter-spacing: 1.3px;
+     margin-top: 30px;
+     }
+
+
+    .div-footer
+    {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 95vw;
+    
+    
+    }
+    .div-contacts{
+      height: 30vh;
+      margin-bottom: 70px;
+    
+    display:flex;
+    flex-direction: column;
+
+    justify-content: space-around;
+    text-align:start;
+    }
+
+
+    .div-text{
+      display:flex;
+      width: 90vw;
+      flex-direction:row;
+      align-items:center;
+      text-align:start;
+      font-size: 1.9em;
+      font-family: "Concert One", sans-serif;
+      font-weight: 400;
+      letter-spacing: 1.1px;
+   
+    
+    }
+  
+    a{
+      margin-left:20px;
+      cursor:pointer;
+      text-decoration:none;
+      color:white;
+    }
+  
+  
+  
+    
+    
+  
+    iframe
+    {
+      height: 30vh;
+      width: 95vw;
+      border-radius: 10px;
+    }
+
+    }
