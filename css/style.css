@@ -10,6 +10,10 @@
   overflow-x: clip;
   text-decoration: none;
 }
+
+body{
+  background-color:#2c003b;
+}
 @media(min-width:901px){
 
 
