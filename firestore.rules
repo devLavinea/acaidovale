@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* CLIENTES: cada cliente só acessa o próprio cadastro. */
+    match /clientes/{clienteId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == clienteId;
+    }
+
+    /* DADOS DA LOJA: um único documento compartilhado pelo site.
+     * Leitura é necessária para calcular entrega no checkout.
+     * A gravação fica restrita a usuários autenticados.
+     * Como o painel usa senha local e autenticação anônima, a regra
+     * não consegue distinguir administrador de cliente sem custom claims.
+     */
+    match /dados_loja/{documentId} {
+      allow read, write: if request.auth != null;
+    }
+
+    /* PEDIDOS */
+    match /pedidos/{pedidoId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.clienteId == request.auth.uid;
+
+      allow read: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && resource.data.clienteId == request.auth.uid;
+
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && resource.data.clienteId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.clienteId == request.auth.uid;
+
+      allow delete: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && resource.data.clienteId == request.auth.uid;
+    }
+  }
+}

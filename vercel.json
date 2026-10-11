@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/adm", "destination": "/index.html" },
+    { "source": "/adm/:path*", "destination": "/index.html" }
+  ]
+}
