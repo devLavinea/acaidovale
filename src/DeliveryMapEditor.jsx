@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { IoStorefrontOutline } from "react-icons/io5";
-import storeLogo from "./assets/loja.png";
+import storeLogo from "./assets/loja.webp";
 
 const CENTER = [-9.4167, -40.5031];
 const icon = L.divIcon({

@@ -2,40 +2,54 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isStoreAdmin() {
+      // TROQUE pelo e-mail exato criado em Firebase Authentication > Users.
+      return signedIn() && request.auth.token.email == 'COLOQUE_O_EMAIL_ADMIN_AQUI';
+    }
 
-    /* CLIENTES: cada cliente só acessa o próprio cadastro. */
+    match /catalogo/{documentId} {
+      allow read: if signedIn();
+      allow create, update, delete: if isStoreAdmin();
+    }
+
     match /clientes/{clienteId} {
-      allow read, write: if request.auth != null
+      allow read, create, update, delete: if signedIn()
         && request.auth.uid == clienteId;
     }
 
-    /* DADOS DA LOJA: um único documento compartilhado pelo site.
-     * Leitura é necessária para calcular entrega no checkout.
-     * A gravação fica restrita a usuários autenticados.
-     * Como o painel usa senha local e autenticação anônima, a regra
-     * não consegue distinguir administrador de cliente sem custom claims.
-     */
+    // Dados públicos da loja são lidos pelo site. Só a conta administrativa altera.
     match /dados_loja/{documentId} {
-      allow read, write: if request.auth != null;
+      allow read: if signedIn();
+      allow create, update, delete: if isStoreAdmin();
     }
 
-    /* PEDIDOS */
+    // O checkout usa um contador global para numerar pedidos. Idealmente mover
+    // a geração do número para uma Cloud Function antes de endurecer esta regra.
+    match /dados_loja/controle_pedidos {
+      allow read, create, update: if signedIn();
+      allow delete: if false;
+    }
+
     match /pedidos/{pedidoId} {
-      allow create: if request.auth != null
+      allow create: if signedIn()
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.clienteId == request.auth.uid;
 
-      allow read: if request.auth != null
+      // O histórico consulta por userId e clienteId para satisfazer as regras.
+      allow read: if signedIn()
         && resource.data.userId == request.auth.uid
         && resource.data.clienteId == request.auth.uid;
 
-      allow update: if request.auth != null
+      allow update: if signedIn()
         && resource.data.userId == request.auth.uid
         && resource.data.clienteId == request.auth.uid
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.clienteId == request.auth.uid;
 
-      allow delete: if request.auth != null
+      allow delete: if signedIn()
         && resource.data.userId == request.auth.uid
         && resource.data.clienteId == request.auth.uid;
     }

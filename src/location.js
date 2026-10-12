@@ -1,4 +1,5 @@
 const DEFAULT_CENTER = [-9.4167, -40.5031]
+const GEOCODE_CACHE = new Map()
 
 export { DEFAULT_CENTER }
 
@@ -251,20 +252,32 @@ export async function geocodeAddress(address = {}, options = {}) {
   if (!street) throw new Error('Informe a rua para localizar o endereço.')
 
   const signal = options?.signal
+  const cacheKey = [street, number, cleanText(address.neighborhood), city, state].map(normalize).join('|')
+  if (GEOCODE_CACHE.has(cacheKey)) return GEOCODE_CACHE.get(cacheKey)
+
   const errors = []
 
-  // 1. Tenta o endereço completo.
+  // 1. Consulta os dois serviços ao mesmo tempo. Assim o primeiro resultado
+  // útil chega muito mais rápido do que a sequência Nominatim -> Photon.
   if (number) {
-    for (const service of [geocodeNominatim, geocodePhoton]) {
-      try {
-        const result = await service(address, signal, 'full')
-        if (result && !result.approximate) return result
-        if (result) errors.push('resultado aproximado no endereço completo')
-      } catch (error) {
-        if (error?.name === 'AbortError') throw error
-        errors.push(error?.message || 'erro na busca completa')
-      }
+    const results = await Promise.allSettled([
+      geocodeNominatim(address, signal, 'full'),
+      geocodePhoton(address, signal, 'full')
+    ])
+
+    const values = results
+      .filter((item) => item.status === 'fulfilled' && item.value)
+      .map((item) => item.value)
+
+    const exact = values.find((result) => !result.approximate)
+    if (exact) {
+      GEOCODE_CACHE.set(cacheKey, exact)
+      return exact
     }
+    values.forEach(() => errors.push('resultado aproximado no endereço completo'))
+    results
+      .filter((item) => item.status === 'rejected' && item.reason?.name !== 'AbortError')
+      .forEach((item) => errors.push(item.reason?.message || 'erro na busca completa'))
   }
 
   // 2. Fallback obrigatório: somente rua + bairro + cidade + estado.
@@ -272,7 +285,10 @@ export async function geocodeAddress(address = {}, options = {}) {
   for (const service of [geocodePhoton, geocodeNominatim]) {
     try {
       const result = await service(address, signal, 'street')
-      if (result) return result
+      if (result) {
+        GEOCODE_CACHE.set(cacheKey, result)
+        return result
+      }
     } catch (error) {
       if (error?.name === 'AbortError') throw error
       errors.push(error?.message || 'erro na busca da rua')
@@ -282,7 +298,10 @@ export async function geocodeAddress(address = {}, options = {}) {
   // 3. Último recurso: centro do bairro, mantendo o marcador ajustável.
   try {
     const result = await geocodeNeighborhood(address, signal)
-    if (result) return result
+    if (result) {
+      GEOCODE_CACHE.set(cacheKey, result)
+      return result
+    }
   } catch (error) {
     if (error?.name === 'AbortError') throw error
     errors.push(error?.message || 'erro na busca do bairro')

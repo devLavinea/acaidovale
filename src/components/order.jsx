@@ -8,7 +8,7 @@ import {
   IoRemove,
   IoCartOutline
 } from 'react-icons/io5'
-import { loadAddonGroups, loadProducts, loadSettings, loadSettingsFromFirebase, addOrder } from '../data'
+import { loadAddonGroups, loadProducts, loadSettings, loadSettingsFromFirebase, addOrder, getStoreHoursStatus, loadProductsFromFirebase, loadAddonGroupsFromFirebase } from '../data'
 import { useCart } from '../cart'
 import AddressMapPicker from '../AddressMapPicker'
 import { geocodeAddress, routeDistance } from '../location'
@@ -17,7 +17,7 @@ import {
   saveCustomer,
   saveOrderToFirebase
 } from '../customer'
-import heroImage from '../assets/fundo-acai-site.png'
+import heroImage from '../assets/fundo-acai-site.webp'
 
 function money(value) {
   return `R$ ${Number(value || 0).toFixed(2).replace('.', ',')}`
@@ -72,23 +72,18 @@ export default function Order({
     clearCart
   } = useCart()
 
-  const products = loadProducts().filter(
-    (p) => p.active
-  )
-
-  const groups = loadAddonGroups().map((g) => ({
-    ...g,
-    items: g.items.filter(
-      (i) => i.active !== false
-    )
-  }))
-
+  const [products, setProducts] = useState(() => loadProducts().filter(p => p.active))
+  const [groups, setGroups] = useState(() => loadAddonGroups().map(g => ({ ...g, items: g.items.filter(i => i.active !== false) })))
   const [settings, setSettings] = useState(loadSettings)
+  const storeStatus = getStoreHoursStatus(settings)
 
   useEffect(() => {
     let cancelled = false
-    loadSettingsFromFirebase().then((remote) => {
-      if (!cancelled && remote) setSettings(remote)
+    Promise.all([loadSettingsFromFirebase(), loadProductsFromFirebase(), loadAddonGroupsFromFirebase()]).then(([remote, remoteProducts, remoteGroups]) => {
+      if (cancelled) return
+      if (remote) setSettings(remote)
+      if (remoteProducts) setProducts(remoteProducts.filter(p => p.active))
+      if (remoteGroups) setGroups(remoteGroups.map(g => ({ ...g, items: g.items.filter(i => i.active !== false) })))
     })
     return () => { cancelled = true }
   }, [])
@@ -364,7 +359,10 @@ export default function Order({
   function addCurrentToCart(
     openCheckout = false
   ) {
+    // Quando a loja está fechada, o cliente pode montar e adicionar ao carrinho,
+    // mas nunca pode abrir/finalizar o checkout.
     if (!cup || spoon === null) return
+    if (openCheckout && !storeStatus.isOpen) return
 
     addItem({
       productId: cup.id,
@@ -549,6 +547,11 @@ export default function Order({
   }
 
   async function finishOrder() {
+    const currentStoreStatus = getStoreHoursStatus(settings)
+    if (!currentStoreStatus.isOpen) {
+      setDeliveryError(currentStoreStatus.message || 'A loja está fechada e não pode receber pedidos agora.')
+      return
+    }
     if (
       !items.length ||
       !customerName.trim() ||
@@ -808,6 +811,7 @@ export default function Order({
                 montar quantos quiser.
               </p>
             </div>
+            {!storeStatus.isOpen && <div className="store-closed-notice" role="status"><strong>Loja fechada</strong><span>{storeStatus.message}</span><small>Você pode consultar o cardápio, mas não é possível enviar pedidos agora.</small></div>}
 
             <div className="order-section">
               <div className="order-section-heading">
@@ -1069,27 +1073,29 @@ export default function Order({
                   Adicionar ao carrinho
                 </button>
 
-                <button
-                  className="btn-finish-now"
-                  disabled={
-                    !cup ||
-                    spoon === null
-                  }
-                  onClick={() =>
-                    addCurrentToCart(true)
-                  }
-                >
-                  <IoCartOutline />
-                  Finalizar pedido
-                </button>
+                {storeStatus.isOpen && (
+                  <button
+                    className="btn-finish-now"
+                    disabled={
+                      !cup ||
+                      spoon === null
+                    }
+                    onClick={() =>
+                      addCurrentToCart(true)
+                    }
+                  >
+                    <IoCartOutline />
+                    Finalizar pedido
+                  </button>
+                )}
               </div>
             </div>
 
-            <div className="mini-cart-hint">
-              Você pode adicionar outro açaí ao
-              carrinho ou finalizar este pedido
-              agora.
-            </div>
+            {storeStatus.isOpen && (
+              <div className="mini-cart-hint">
+                Você pode adicionar outro açaí ao carrinho ou finalizar este pedido agora.
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -1105,6 +1111,7 @@ export default function Order({
                 dados uma única vez.
               </p>
             </div>
+            {!storeStatus.isOpen && <div className="store-closed-notice" role="status"><strong>Loja fechada</strong><span>{storeStatus.message}</span><small>O pedido só poderá ser enviado durante o horário de funcionamento.</small></div>}
 
             <div className="checkout-cart-list">
               {items.map((item) => (
@@ -1511,6 +1518,7 @@ export default function Order({
                 !customerPhone.trim() ||
                 (fulfillmentType === 'entrega' && (!cep || !address.number)) ||
                 !delivery ||
+                !storeStatus.isOpen ||
                 saving
               }
               onClick={finishOrder}

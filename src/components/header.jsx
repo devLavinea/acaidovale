@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.webp'
 import { IoClose, IoMenu, IoHome, IoRestaurant, IoReceiptOutline, IoCall, IoCartOutline } from 'react-icons/io5'
 import { useCart } from '../cart'
 import OrdersHistory from './ordersHistory'

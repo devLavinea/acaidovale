@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { IoArrowForward, IoRestaurant, IoLeaf, IoFlash, IoShieldCheckmark, IoCar } from 'react-icons/io5'
 import Order from './order'
-import heroImage from '../assets/fundo-acai-site.png'
+import heroImage from '../assets/fundo-acai-site.webp'
 function Cta(){
  const [orderOpen,setOrderOpen]=useState(false)
  useEffect(()=>{const open=()=>setOrderOpen(true);window.addEventListener('open-order-builder',open);return()=>window.removeEventListener('open-order-builder',open)},[])

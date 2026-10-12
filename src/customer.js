@@ -326,6 +326,7 @@ export async function getCustomerOrders() {
   const q = query(
     collection(db, 'pedidos'),
     where('userId', '==', user.uid),
+    where('clienteId', '==', user.uid),
     limit(30)
   )
 
